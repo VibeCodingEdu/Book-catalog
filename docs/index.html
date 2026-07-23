@@ -4,100 +4,127 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>קטלוג אוסף מנדי גרינפלד</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700&family=Heebo:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="site">
-    <div class="container bar">
-      <h1>📚 קטלוג אוסף מנדי גרינפלד</h1>
-      <button id="addBtn" class="btn primary">+ הוסף פריט</button>
+  <header class="top">
+    <div class="wrap top-inner">
+      <div class="brand">
+        <div class="monogram">מג</div>
+        <div>
+          <div class="eyebrow">אוסף פרטי · מחקר</div>
+          <h1>קטלוג אוסף מנדי גרינפלד</h1>
+        </div>
+      </div>
+      <div class="search">
+        <input id="search" type="search" placeholder="חיפוש כותר, מחבר, מספר קטלוגי…" aria-label="חיפוש" />
+        <svg class="ico" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+      </div>
+      <button class="icon-btn" id="themeBtn" aria-label="החלפת מצב תצוגה"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg></button>
+      <button class="btn primary" id="addBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> פריט חדש</button>
     </div>
   </header>
 
-  <main class="container">
-    <!-- הודעת הגדרה כשה-URL חסר -->
-    <section id="setup" class="card hidden">
-      <h2>כמעט מוכן 🛠️</h2>
-      <p>עדיין לא הוגדרה כתובת ה-Apps Script. פתח את הקובץ <code>docs/config.js</code>,
-         הדבק את כתובת ה-Web App (מסתיימת ב-<code>/exec</code>), ודחוף לגיט.
-         ראה מדריך: <code>SETUP-GITHUB-PAGES.md</code>.</p>
+  <div class="wrap">
+    <section id="setup" class="card hidden" style="padding:1.5rem 1.75rem">
+      <h2 style="font-family:var(--font-serif)">כמעט מוכן</h2>
+      <p>עדיין לא הוגדרה כתובת ה-Apps Script. פתח את <code>docs/config.js</code>, הדבק את כתובת ה-Web App (מסתיימת ב-<code>/exec</code>), ודחוף לגיט.</p>
     </section>
 
-    <!-- סרגל סינון -->
-    <section id="toolbar" class="card filters hidden">
-      <input id="search" class="grow" type="search" placeholder="חיפוש חופשי (כותר, מחבר, מספר קטלוגי...)" />
-      <select id="fTopic"><option value="">כל הנושאים</option></select>
-      <select id="fShelf"><option value="">כל המדפים</option></select>
-      <select id="fCollection"><option value="">כל האוספים</option></select>
+    <div id="toolbar" class="toolbar hidden">
+      <div class="chips" id="chips">
+        <button class="chip active" data-group="">הכול</button>
+        <button class="chip" data-group="torani"><span class="dot" style="background:var(--c-torani)"></span> תורני</button>
+        <button class="chip" data-group="klali"><span class="dot" style="background:var(--c-klali)"></span> כללי</button>
+        <button class="chip" data-group="rare"><span class="dot" style="background:var(--c-rare)"></span> אוסף נדיר</button>
+      </div>
+      <select id="fTopic" class="filter-sel"><option value="">כל הנושאים</option></select>
+      <select id="fShelf" class="filter-sel"><option value="">כל המדפים</option></select>
       <span id="count" class="count"></span>
-    </section>
+    </div>
 
-    <section id="tableWrap" class="card hidden">
-      <div class="scroll-x">
-        <table id="table">
-          <thead>
-            <tr>
-              <th></th><th>מס׳ קטלוגי</th><th>כותר</th><th>מחבר</th><th>מו״ל</th>
-              <th>שנה</th><th>נושא</th><th>מדף</th><th>אוסף</th><th></th>
-            </tr>
-          </thead>
-          <tbody id="rows"></tbody>
-        </table>
-      </div>
-      <p id="empty" class="empty hidden">עדיין אין פריטים. הוסף את הראשון עם הכפתור למעלה.</p>
-    </section>
-
-    <p id="loading" class="empty">טוען…</p>
-  </main>
-
-  <!-- טופס הוספה/עריכה -->
-  <dialog id="dialog">
-    <form id="form" method="dialog">
-      <h2 id="formTitle">פריט חדש</h2>
-      <div class="grid">
-        <label>אזור <select name="prefix" id="prefix" required></select></label>
-        <label>כותר <input name="title" required /></label>
-        <label>מחבר <input name="author" /></label>
-        <label>מו״ל <input name="publisher" list="dl-publisher" /></label>
-        <label>מקום דפוס <input name="placeOfPrint" /></label>
-        <label>שנה עברית <input name="hebrewYear" placeholder="תשכ״ג" /></label>
-        <label>שנה לועזית <input name="gregorianYear" inputmode="numeric" /></label>
-        <label>מהדורה <input name="edition" /></label>
-        <label>שפה <select name="language" id="language"></select></label>
-        <label>סוג פריט <select name="itemType" id="itemType"></select></label>
-        <label>מדף <input name="shelf" list="dl-shelf" /></label>
-        <label>נושא <input name="topic" list="dl-topic" /></label>
-        <label>אוסף <input name="collection" list="dl-collection" /></label>
-        <label>מצב <select name="condition" id="condition"></select></label>
-        <label class="wide">תיאור פיזי <input name="physicalDescription" placeholder="עמודים, גודל, כריכה" /></label>
-        <label>תגיות <input name="tags" placeholder="מופרד בפסיקים" /></label>
-        <label>ISBN <input name="isbn" /></label>
-        <label>מס׳ קטלוג חיצוני <input name="externalCatalog" /></label>
-        <div class="wide img-field">
-          <span class="lbl">תמונת שער / סריקה</span>
-          <div class="img-row">
-            <input type="file" id="imgInput" accept="image/*" />
-            <span id="imgStatus" class="muted"></span>
-            <button type="button" id="imgClear" class="btn link hidden">הסר</button>
-          </div>
-          <input type="hidden" name="imageUrl" id="imageUrl" />
-          <a id="imgPreviewLink" href="#" target="_blank" rel="noopener" class="hidden">
-            <img id="imgPreview" alt="תצוגה מקדימה" />
-          </a>
+    <main>
+      <div id="tableWrap" class="card hidden">
+        <div class="scroll-x">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th></th><th>מס׳ קטלוגי</th><th>כותר</th><th>מחבר</th>
+                <th>שנה</th><th>אוסף</th><th>נושא</th><th>מדף</th>
+              </tr>
+            </thead>
+            <tbody id="rows"></tbody>
+          </table>
         </div>
-        <label class="wide">הערות / אחר <textarea name="notes" rows="2"></textarea></label>
+        <p id="empty" class="empty hidden">עדיין אין פריטים. הוסף את הראשון עם הכפתור למעלה.</p>
       </div>
-      <datalist id="dl-publisher"></datalist>
-      <datalist id="dl-shelf"></datalist>
-      <datalist id="dl-topic"></datalist>
-      <datalist id="dl-collection"></datalist>
-      <div class="actions">
-        <span id="editingCat" class="muted"></span>
-        <span class="spacer"></span>
-        <button type="button" id="cancelBtn" class="btn">ביטול</button>
-        <button type="submit" id="saveBtn" class="btn primary">שמור</button>
+      <p id="loading" class="loading">טוען…</p>
+    </main>
+  </div>
+
+  <!-- תצוגה מורחבת -->
+  <dialog id="detail">
+    <div class="sheet">
+      <div class="sheet-head">
+        <h2>פרטי פריט</h2>
+        <span style="flex:1"></span>
+        <button class="btn ghost" id="detailOpenNew"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg> פתח בחלון נפרד</button>
+        <button class="icon-btn" id="detailClose" aria-label="סגור" style="width:34px;height:34px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
       </div>
-      <p id="formError" class="error hidden"></p>
+      <div class="sheet-body" id="detailBody"></div>
+    </div>
+  </dialog>
+
+  <!-- הוספה / עריכה -->
+  <dialog id="dialog">
+    <form id="form" class="sheet" method="dialog">
+      <div class="sheet-head"><h2 id="formTitle">פריט חדש</h2><span id="editingCat" class="muted" style="flex:1"></span></div>
+      <div class="sheet-body">
+        <div class="grid-form">
+          <label>אזור <select name="prefix" id="prefix" required></select></label>
+          <label>כותר <input name="title" required /></label>
+          <label>מחבר <input name="author" /></label>
+          <label>מו״ל <input name="publisher" list="dl-publisher" /></label>
+          <label>מקום דפוס <input name="placeOfPrint" /></label>
+          <label>שנה עברית <input name="hebrewYear" placeholder="תשכ״ג" /></label>
+          <label>שנה לועזית <input name="gregorianYear" inputmode="numeric" /></label>
+          <label>מהדורה <input name="edition" /></label>
+          <label>שפה <select name="language" id="language"></select></label>
+          <label>סוג פריט <select name="itemType" id="itemType"></select></label>
+          <label>מדף <input name="shelf" list="dl-shelf" /></label>
+          <label>נושא <input name="topic" list="dl-topic" /></label>
+          <label>אוסף <input name="collection" list="dl-collection" /></label>
+          <label>מצב <select name="condition" id="condition"></select></label>
+          <label class="wide">תיאור פיזי <input name="physicalDescription" placeholder="עמודים, גודל, כריכה" /></label>
+          <label>תגיות <input name="tags" placeholder="מופרד בפסיקים" /></label>
+          <label>ISBN <input name="isbn" /></label>
+          <label>מס׳ קטלוג חיצוני <input name="externalCatalog" /></label>
+          <div class="wide img-field">
+            <span class="lbl">תמונת שער / סריקה</span>
+            <div class="img-row">
+              <input type="file" id="imgInput" accept="image/*" />
+              <span id="imgStatus" class="muted"></span>
+              <button type="button" id="imgClear" class="btn ghost danger hidden">הסר</button>
+            </div>
+            <input type="hidden" name="imageUrl" id="imageUrl" />
+            <a id="imgPreviewLink" href="#" target="_blank" rel="noopener" class="hidden"><img id="imgPreview" alt="תצוגה מקדימה" /></a>
+          </div>
+          <label class="wide">הערות / אחר <textarea name="notes" rows="2"></textarea></label>
+        </div>
+        <datalist id="dl-publisher"></datalist>
+        <datalist id="dl-shelf"></datalist>
+        <datalist id="dl-topic"></datalist>
+        <datalist id="dl-collection"></datalist>
+        <div class="form-actions">
+          <span class="spacer"></span>
+          <button type="button" id="cancelBtn" class="btn">ביטול</button>
+          <button type="submit" id="saveBtn" class="btn primary">שמור</button>
+        </div>
+        <p id="formError" class="error hidden"></p>
+      </div>
     </form>
   </dialog>
 
