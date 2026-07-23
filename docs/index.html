@@ -37,7 +37,7 @@
         <table id="table">
           <thead>
             <tr>
-              <th>מס׳ קטלוגי</th><th>כותר</th><th>מחבר</th><th>מו״ל</th>
+              <th></th><th>מס׳ קטלוגי</th><th>כותר</th><th>מחבר</th><th>מו״ל</th>
               <th>שנה</th><th>נושא</th><th>מדף</th><th>אוסף</th><th></th>
             </tr>
           </thead>
@@ -73,7 +73,18 @@
         <label>תגיות <input name="tags" placeholder="מופרד בפסיקים" /></label>
         <label>ISBN <input name="isbn" /></label>
         <label>מס׳ קטלוג חיצוני <input name="externalCatalog" /></label>
-        <label class="wide">קישור תמונה <input name="imageUrl" type="url" placeholder="קישור ל-Google Drive" /></label>
+        <div class="wide img-field">
+          <span class="lbl">תמונת שער / סריקה</span>
+          <div class="img-row">
+            <input type="file" id="imgInput" accept="image/*" />
+            <span id="imgStatus" class="muted"></span>
+            <button type="button" id="imgClear" class="btn link hidden">הסר</button>
+          </div>
+          <input type="hidden" name="imageUrl" id="imageUrl" />
+          <a id="imgPreviewLink" href="#" target="_blank" rel="noopener" class="hidden">
+            <img id="imgPreview" alt="תצוגה מקדימה" />
+          </a>
+        </div>
         <label class="wide">הערות / אחר <textarea name="notes" rows="2"></textarea></label>
       </div>
       <datalist id="dl-publisher"></datalist>

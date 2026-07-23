@@ -94,6 +94,13 @@ function filtered() {
   });
 }
 
+// מזהה קובץ Drive מתוך קישור, לבניית תמונה ממוזערת
+function driveThumb(url) {
+  if (!url) return "";
+  var m = /[-\w]{25,}/.exec(url);
+  return m ? "https://drive.google.com/thumbnail?id=" + m[0] + "&sz=w200" : "";
+}
+
 function render() {
   var rows = $("rows"); rows.innerHTML = "";
   var list = filtered();
@@ -102,6 +109,18 @@ function render() {
 
   list.forEach(function (it) {
     var tr = document.createElement("tr");
+
+    var thumbTd = document.createElement("td");
+    var t = driveThumb(it.imageUrl);
+    if (t) {
+      var a = document.createElement("a");
+      a.href = it.imageUrl; a.target = "_blank"; a.rel = "noopener";
+      var img = document.createElement("img");
+      img.src = t; img.className = "thumb"; img.alt = "תמונה"; img.loading = "lazy";
+      a.appendChild(img); thumbTd.appendChild(a);
+    }
+    tr.appendChild(thumbTd);
+
     tr.appendChild(td(it.catalogNumber));
     tr.appendChild(td(it.title, "title"));
     tr.appendChild(td(it.author));
@@ -133,12 +152,75 @@ function mkBtn(label, cls, fn) {
   return b;
 }
 
+// ===== תמונות =====
+function setImagePreview(url) {
+  var link = $("imgPreviewLink"), img = $("imgPreview"), clear = $("imgClear");
+  $("imageUrl").value = url || "";
+  var t = driveThumb(url);
+  if (t) {
+    img.src = t; link.href = url;
+    link.classList.remove("hidden"); clear.classList.remove("hidden");
+  } else {
+    img.removeAttribute("src");
+    link.classList.add("hidden"); clear.classList.add("hidden");
+  }
+}
+
+// קריאת קובץ, הקטנה ל-maxDim, והחזרת JPEG כ-dataURL
+function scaleToJpeg(file, maxDim) {
+  return new Promise(function (resolve, reject) {
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      var img = new Image();
+      img.onload = function () {
+        var w = img.width, h = img.height;
+        var scale = Math.min(1, maxDim / Math.max(w, h));
+        var cw = Math.round(w * scale), ch = Math.round(h * scale);
+        var c = document.createElement("canvas");
+        c.width = cw; c.height = ch;
+        c.getContext("2d").drawImage(img, 0, 0, cw, ch);
+        resolve(c.toDataURL("image/jpeg", 0.85));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function onImageChosen() {
+  var input = $("imgInput");
+  var file = input.files && input.files[0];
+  if (!file) return;
+  var status = $("imgStatus");
+  status.textContent = "מקטין ומעלה…";
+  scaleToJpeg(file, 1600)
+    .then(function (dataUrl) {
+      return apiPost({
+        action: "upload",
+        filename: "scan_" + Date.now() + ".jpg",
+        mimeType: "image/jpeg",
+        dataBase64: dataUrl.split(",")[1]
+      });
+    })
+    .then(function (res) {
+      if (!res || res.ok === false) throw (res && res.error) || "העלאה נכשלה";
+      setImagePreview(res.url);
+      status.textContent = "הועלתה ✓";
+    })
+    .catch(function (err) { status.textContent = "שגיאה: " + err; })
+    .then(function () { input.value = ""; });
+}
+
 // ===== טופס הוספה/עריכה =====
 function openForm(item) {
   state.editing = item || null;
   var f = $("form");
   f.reset();
   $("formError").classList.add("hidden");
+  $("imgStatus").textContent = "";
+  setImagePreview(item ? item.imageUrl : "");
   if (item) {
     $("formTitle").textContent = "עריכת פריט";
     $("editingCat").textContent = "מספר קטלוגי: " + item.catalogNumber;
@@ -199,6 +281,10 @@ document.addEventListener("DOMContentLoaded", function () {
   $("addBtn").addEventListener("click", function () { openForm(null); });
   $("cancelBtn").addEventListener("click", function () { $("dialog").close(); });
   $("form").addEventListener("submit", submitForm);
+  $("imgInput").addEventListener("change", onImageChosen);
+  $("imgClear").addEventListener("click", function () {
+    setImagePreview(""); $("imgStatus").textContent = "";
+  });
   ["search", "fTopic", "fShelf", "fCollection"].forEach(function (id) {
     $(id).addEventListener("input", render);
   });

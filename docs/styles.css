@@ -79,6 +79,13 @@ dialog::backdrop { background: rgba(0,0,0,0.4); }
 .actions { display: flex; align-items: center; gap: 0.6rem; margin-top: 1.1rem; }
 .actions .spacer { flex: 1; }
 
+/* שדה תמונה */
+.img-field { display: flex; flex-direction: column; gap: 0.4rem; }
+.img-field .lbl { font-size: 0.82rem; color: var(--muted); }
+.img-row { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+#imgPreview { max-height: 120px; border-radius: 8px; border: 1px solid var(--border); margin-top: 0.3rem; }
+img.thumb { width: 42px; height: 42px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); display: block; }
+
 @media (max-width: 560px) {
   .grid { grid-template-columns: 1fr; }
 }

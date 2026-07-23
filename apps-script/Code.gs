@@ -61,6 +61,7 @@ function doPost(e) {
     if (body.action === 'add') return json_({ ok: true, catalogNumber: addItem_(body.item) });
     if (body.action === 'update') { updateItem_(body.catalogNumber, body.item); return json_({ ok: true }); }
     if (body.action === 'delete') { deleteItem_(body.catalogNumber); return json_({ ok: true }); }
+    if (body.action === 'upload') return json_(uploadImage_(body));
     return json_({ ok: false, error: 'פעולה לא מוכרת' });
   } catch (err) {
     return json_({ ok: false, error: String(err) });
@@ -153,6 +154,32 @@ function syncLookups_(item) {
     var existing = last < 2 ? [] : sh.getRange(2, 1, last - 1, 1).getValues().map(function (r) { return String(r[0]).trim(); });
     if (existing.indexOf(val) === -1) sh.appendRow([val]);
   });
+}
+
+// ===== העלאת תמונות ל-Drive =====
+var IMG_FOLDER_NAME = 'תמונות קטלוג';
+
+function getImageFolder_() {
+  var props = PropertiesService.getScriptProperties();
+  var id = props.getProperty('IMG_FOLDER_ID');
+  if (id) {
+    try { return DriveApp.getFolderById(id); } catch (e) { /* נמחקה — ניצור מחדש */ }
+  }
+  var it = DriveApp.getFoldersByName(IMG_FOLDER_NAME);
+  var folder = it.hasNext() ? it.next() : DriveApp.createFolder(IMG_FOLDER_NAME);
+  props.setProperty('IMG_FOLDER_ID', folder.getId());
+  return folder;
+}
+
+function uploadImage_(body) {
+  if (!body.dataBase64) return { ok: false, error: 'לא התקבלה תמונה' };
+  var folder = getImageFolder_();
+  var bytes = Utilities.base64Decode(body.dataBase64);
+  var blob = Utilities.newBlob(bytes, body.mimeType || 'image/jpeg', body.filename || ('scan_' + Date.now() + '.jpg'));
+  var file = folder.createFile(blob);
+  file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+  var fid = file.getId();
+  return { ok: true, fileId: fid, url: 'https://drive.google.com/file/d/' + fid + '/view' };
 }
 
 function getLookups_() {
