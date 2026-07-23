@@ -157,17 +157,21 @@ function syncLookups_(item) {
 }
 
 // ===== העלאת תמונות ל-Drive =====
+// מזהה תיקיית התמונות שלך ב-Drive (מתוך כתובת התיקייה).
+// השאר ריק ('') כדי שהסקריפט ייצור/ישתמש אוטומטית בתיקייה בשם למטה.
+var FIXED_IMG_FOLDER_ID = '1g91_15fyHai4BNO4KnFG-8iWZpHnBJnr';
 var IMG_FOLDER_NAME = 'תמונות קטלוג';
 
 function getImageFolder_() {
+  if (FIXED_IMG_FOLDER_ID) return DriveApp.getFolderById(FIXED_IMG_FOLDER_ID);
   var props = PropertiesService.getScriptProperties();
-  var id = props.getProperty('IMG_FOLDER_ID');
+  var id = props.getProperty('AUTO_IMG_FOLDER_ID');
   if (id) {
     try { return DriveApp.getFolderById(id); } catch (e) { /* נמחקה — ניצור מחדש */ }
   }
   var it = DriveApp.getFoldersByName(IMG_FOLDER_NAME);
   var folder = it.hasNext() ? it.next() : DriveApp.createFolder(IMG_FOLDER_NAME);
-  props.setProperty('IMG_FOLDER_ID', folder.getId());
+  props.setProperty('AUTO_IMG_FOLDER_ID', folder.getId());
   return folder;
 }
 
