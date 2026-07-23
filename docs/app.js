@@ -95,10 +95,9 @@ function filtered() {
 }
 
 function thumbHtml(it) {
-  var g = collGroup(it);
   var t = driveThumb(it.imageUrl, 120);
   if (t) return '<img class="thumb" loading="lazy" src="' + t + '" alt="" />';
-  return '<span class="thumb coverbox ' + g + '"></span>';
+  return '<span class="thumb-empty" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7C10.3 6 8 5.6 6 5.8v9.4c2-.2 4.3.2 6 1.2 1.7-1 4-1.4 6-1.2V5.8C16 5.6 13.7 6 12 7z"/><path d="M12 7v9.4"/></svg></span>';
 }
 
 function render() {

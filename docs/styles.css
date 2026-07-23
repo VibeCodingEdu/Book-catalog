@@ -140,7 +140,8 @@ main { padding: 1rem 0 4rem; }
 .card { background: var(--panel); border: 1px solid var(--line-soft); border-radius: 16px; overflow: hidden; }
 .scroll-x { overflow-x: auto; }
 table.tbl { width: 100%; border-collapse: collapse; }
-.tbl th { text-align: right; font-size: 12px; font-weight: 500; color: var(--faint); padding: 12px 14px; border-bottom: 1px solid var(--line); letter-spacing: 0.3px; white-space: nowrap; position: sticky; top: 57px; background: color-mix(in srgb, var(--panel) 92%, transparent); backdrop-filter: blur(6px); }
+.tbl th { text-align: right; font-size: 12px; font-weight: 500; color: var(--faint); padding: 12px 14px; border-bottom: 1px solid var(--line); letter-spacing: 0.3px; white-space: nowrap; position: sticky; top: 57px; background: var(--panel); z-index: 2; }
+.tbl th:first-child, .tbl td:first-child { width: 48px; }
 .tbl td { padding: 9px 14px; border-bottom: 1px solid var(--line-soft); font-size: 14px; vertical-align: middle; }
 .tbl tbody tr { transition: background .16s; cursor: pointer; }
 .tbl tbody tr:hover { background: color-mix(in srgb, var(--accent) 6%, transparent); }
@@ -149,6 +150,11 @@ table.tbl { width: 100%; border-collapse: collapse; }
   width: 34px; height: 44px; border-radius: 5px; object-fit: cover; display: block;
   box-shadow: 0 2px 6px -1px var(--shadow-c); background-size: cover; background-position: center;
 }
+.thumb-empty {
+  width: 30px; height: 40px; border-radius: 5px; display: grid; place-items: center;
+  color: var(--faint); border: 1px solid var(--line-soft); background: color-mix(in srgb, var(--ink) 3%, transparent);
+}
+.thumb-empty svg { width: 16px; height: 16px; }
 .catcell { font-family: var(--font-mono); font-size: 12.5px; color: var(--muted); white-space: nowrap; }
 .tt { font-family: var(--font-serif); font-weight: 700; font-size: 15px; }
 .coll-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--muted); white-space: nowrap; }
