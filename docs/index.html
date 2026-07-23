@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>קטלוג Merkos</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site">
+    <div class="container bar">
+      <h1>📚 קטלוג Merkos</h1>
+      <button id="addBtn" class="btn primary">+ הוסף פריט</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- הודעת הגדרה כשה-URL חסר -->
+    <section id="setup" class="card hidden">
+      <h2>כמעט מוכן 🛠️</h2>
+      <p>עדיין לא הוגדרה כתובת ה-Apps Script. פתח את הקובץ <code>docs/config.js</code>,
+         הדבק את כתובת ה-Web App (מסתיימת ב-<code>/exec</code>), ודחוף לגיט.
+         ראה מדריך: <code>SETUP-GITHUB-PAGES.md</code>.</p>
+    </section>
+
+    <!-- סרגל סינון -->
+    <section id="toolbar" class="card filters hidden">
+      <input id="search" class="grow" type="search" placeholder="חיפוש חופשי (כותר, מחבר, מספר קטלוגי...)" />
+      <select id="fTopic"><option value="">כל הנושאים</option></select>
+      <select id="fShelf"><option value="">כל המדפים</option></select>
+      <select id="fCollection"><option value="">כל האוספים</option></select>
+      <span id="count" class="count"></span>
+    </section>
+
+    <section id="tableWrap" class="card hidden">
+      <div class="scroll-x">
+        <table id="table">
+          <thead>
+            <tr>
+              <th>מס׳ קטלוגי</th><th>כותר</th><th>מחבר</th><th>מו״ל</th>
+              <th>שנה</th><th>נושא</th><th>מדף</th><th>אוסף</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+      <p id="empty" class="empty hidden">עדיין אין פריטים. הוסף את הראשון עם הכפתור למעלה.</p>
+    </section>
+
+    <p id="loading" class="empty">טוען…</p>
+  </main>
+
+  <!-- טופס הוספה/עריכה -->
+  <dialog id="dialog">
+    <form id="form" method="dialog">
+      <h2 id="formTitle">פריט חדש</h2>
+      <div class="grid">
+        <label>אזור <select name="prefix" id="prefix" required></select></label>
+        <label>כותר <input name="title" required /></label>
+        <label>מחבר <input name="author" /></label>
+        <label>מו״ל <input name="publisher" list="dl-publisher" /></label>
+        <label>מקום דפוס <input name="placeOfPrint" /></label>
+        <label>שנה עברית <input name="hebrewYear" placeholder="תשכ״ג" /></label>
+        <label>שנה לועזית <input name="gregorianYear" inputmode="numeric" /></label>
+        <label>מהדורה <input name="edition" /></label>
+        <label>שפה <select name="language" id="language"></select></label>
+        <label>סוג פריט <select name="itemType" id="itemType"></select></label>
+        <label>מדף <input name="shelf" list="dl-shelf" /></label>
+        <label>נושא <input name="topic" list="dl-topic" /></label>
+        <label>אוסף <input name="collection" list="dl-collection" /></label>
+        <label>מצב <select name="condition" id="condition"></select></label>
+        <label class="wide">תיאור פיזי <input name="physicalDescription" placeholder="עמודים, גודל, כריכה" /></label>
+        <label>תגיות <input name="tags" placeholder="מופרד בפסיקים" /></label>
+        <label>ISBN <input name="isbn" /></label>
+        <label>מס׳ קטלוג חיצוני <input name="externalCatalog" /></label>
+        <label class="wide">קישור תמונה <input name="imageUrl" type="url" placeholder="קישור ל-Google Drive" /></label>
+        <label class="wide">הערות / אחר <textarea name="notes" rows="2"></textarea></label>
+      </div>
+      <datalist id="dl-publisher"></datalist>
+      <datalist id="dl-shelf"></datalist>
+      <datalist id="dl-topic"></datalist>
+      <datalist id="dl-collection"></datalist>
+      <div class="actions">
+        <span id="editingCat" class="muted"></span>
+        <span class="spacer"></span>
+        <button type="button" id="cancelBtn" class="btn">ביטול</button>
+        <button type="submit" id="saveBtn" class="btn primary">שמור</button>
+      </div>
+      <p id="formError" class="error hidden"></p>
+    </form>
+  </dialog>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

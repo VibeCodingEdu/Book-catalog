@@ -4,12 +4,26 @@
 
 אפליקציית ווב לקטלוג ספרים, חוברות ודברי דפוס — כללי ותורני, עם דגש על אוסף מחקר נדיר.
 
-- **אפיון מלא:** ראה [SPEC.md](SPEC.md)
-- **מדריך הקמה (חיבור לגוגל):** ראה [SETUP-GOOGLE.md](SETUP-GOOGLE.md)
-- **מסד נתונים:** Google Sheets · **תמונות:** Google Drive · **קוד:** Next.js + React (RTL)
+**ארכיטקטורה:** אתר סטטי (GitHub Pages) · "שרת" ב-Google Apps Script · נתונים ב-Google Sheets.
+
+- **אפיון מלא:** [SPEC.md](SPEC.md)
+- **מדריך הקמה (צעד-אחר-צעד):** [SETUP-GITHUB-PAGES.md](SETUP-GITHUB-PAGES.md)
+
+## מבנה הפרויקט
+
+```
+docs/            האתר הסטטי (GitHub Pages מגיש מכאן)
+  index.html
+  app.js         לוגיקת הממשק
+  styles.css
+  config.js      ← כאן מדביקים את כתובת ה-Apps Script
+apps-script/
+  Code.gs        קוד ה-"שרת" — מדביקים בעורך Apps Script של הגיליון
+```
 
 ## סטטוס
 
-🚧 שלב אפיון. הקוד טרם נכתב — ראה תוכנית הבנייה בשלבים ב-[SPEC.md](SPEC.md) §8.
+✅ שלב 1 (CRUD ידני) מוכן בקוד. נותר: להקים לפי [SETUP-GITHUB-PAGES.md](SETUP-GITHUB-PAGES.md).
+כתובת האתר לאחר הפעלת Pages: <https://vibecodingedu.github.io/Book-catalog/>
 
 </div>

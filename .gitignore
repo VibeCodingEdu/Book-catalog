@@ -1,32 +1,16 @@
-# Dependencies
-node_modules/
-.pnp/
-.pnp.js
-
-# Next.js
-.next/
-out/
-build/
-dist/
-
-# Environment & secrets — NEVER commit
+# סודות — לעולם לא לגיט
 .env
 .env.*
-!.env.example
 *service-account*.json
 credentials*.json
 google-*.json
 
-# Logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# OS
+# מערכת / עורך
 .DS_Store
 Thumbs.db
-
-# Editor
 .vscode/
 .idea/
+
+# שאריות אפשריות
+node_modules/
+*.log
