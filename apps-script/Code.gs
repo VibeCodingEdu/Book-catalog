@@ -171,6 +171,12 @@ function getImageFolder_() {
   return folder;
 }
 
+// הרץ פעם אחת בעורך כדי לאשר גישה ל-Drive וליצור את תיקיית התמונות.
+function authorizeDrive() {
+  var f = getImageFolder_();
+  Logger.log('✓ תיקיית התמונות מוכנה: ' + f.getName() + ' (' + f.getId() + ')');
+}
+
 function uploadImage_(body) {
   if (!body.dataBase64) return { ok: false, error: 'לא התקבלה תמונה' };
   var folder = getImageFolder_();
